@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "968443476602",
+    "project_id": "learnkorean-f7aa1",
+    "storage_bucket": "learnkorean-f7aa1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:968443476602:android:db40ec07644238025299c3",
+        "android_client_info": {
+          "package_name": "com.example.learnkorean"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTzUVJvzaJ_0JwSmsKs7iUR8ymHporSPs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
