@@ -24,9 +24,9 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
-    private DrawerLayout drawer;
+
 
 
     @Override
@@ -34,52 +34,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer,
-                R.string.open_nav, R.string.close_nav);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container,
-                    new HomeFragment()).commit();
-            navigationView.setCheckedItem(R.id.nav_item_home);
-        }
-    }
-
-    @SuppressLint("SwitchIntDef")
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_item_home:
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container,
-                        new HomeFragment()).commit();
-                break;
-
-            case R.id.nav_item_profile:
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container,
-                        new ProfileFragment()).commit();
-                break;
-
-            case R.id.nav_item_settings:
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container,
-                        new SettingsFragment()).commit();
-                break;
-        }
-
-        drawer.closeDrawers();
-        return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
     }
 }
