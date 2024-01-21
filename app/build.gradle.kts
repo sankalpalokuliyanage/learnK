@@ -50,6 +50,10 @@ dependencies {
     implementation("androidx.navigation:navigation-runtime:2.7.6")
     implementation("androidx.navigation:navigation-fragment:2.7.6")
     implementation("androidx.navigation:navigation-ui:2.7.6")
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+
 
 
 }
