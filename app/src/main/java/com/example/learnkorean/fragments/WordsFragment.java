@@ -1,17 +1,18 @@
 package com.example.learnkorean.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
+import com.example.learnkorean.Activities.WordsActivity;
 import com.example.learnkorean.R;
 import com.example.learnkorean.adaptor.WordLAdapter;
 import com.example.learnkorean.models.WordLModel;
@@ -24,17 +25,17 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WordsFragment extends Fragment {
+public class WordsFragment extends Fragment implements WordLAdapter.OnItemClickListener {
 
-    DatabaseReference databaseReference;
-    WordLAdapter adapter;
-    List<WordLModel> modelList;
+    private DatabaseReference databaseReference;
+    private WordLAdapter adapter;
+    private List<WordLModel> modelList;
+
     ValueEventListener eventListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_words, container, false);
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview1);
@@ -42,17 +43,19 @@ public class WordsFragment extends Fragment {
 
         modelList = new ArrayList<>();
 
-        adapter = new WordLAdapter(requireContext(), modelList);
+        adapter = new WordLAdapter(requireContext(), modelList, this);
         recyclerView.setAdapter(adapter);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("level_w");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("lessons");
 
         eventListener = databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 modelList.clear();
-                for (DataSnapshot itemSnapShot : snapshot.getChildren()) {
-                    WordLModel wordLModel = itemSnapShot.getValue(WordLModel.class);
+                for (DataSnapshot lessonSnapshot : snapshot.getChildren()) {
+                    WordLModel wordLModel = new WordLModel();
+                    wordLModel.setLessonId(lessonSnapshot.getKey());
+                    wordLModel.setLesson(lessonSnapshot.child("lessonName").getValue(String.class));
                     modelList.add(wordLModel);
                 }
                 adapter.notifyDataSetChanged();
@@ -68,9 +71,18 @@ public class WordsFragment extends Fragment {
     }
 
     @Override
+    public void onItemClick(int position) {
+        WordLModel clickedItem = modelList.get(position);
+        String selectedLessonId = clickedItem.getLessonId();
+
+        Intent intent = new Intent(requireContext(), WordsActivity.class);
+        intent.putExtra("lessonId", selectedLessonId);
+        startActivity(intent);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-        // Remove the ValueEventListener when the fragment is destroyed
         if (databaseReference != null && eventListener != null) {
             databaseReference.removeEventListener(eventListener);
         }
