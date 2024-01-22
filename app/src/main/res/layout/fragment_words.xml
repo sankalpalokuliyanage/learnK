@@ -1,17 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recyclerview1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.WordsFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="WORDS"
-        android:textSize="30dp"
-        android:layout_centerInParent="true"
-        android:textColor="@color/black"/>
-
-</RelativeLayout>
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    android:paddingTop="?attr/actionBarSize"
+    tools:listitem="@layout/wlrecyc" />
