@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    #lessons {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+      text-align: center;
+      width: 80%;
+    }
+
+    select, input, button {
+      margin: 8px;
+      padding: 8px;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    button {
+      background-color: #007BFF;
+      color: #fff;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    #wordSearchResults {
+      margin-top: 20px;
+      text-align: center;
+      width: 80%;
+    }
+
+    #searchResultsTable {
+      width: 100%;
+      margin: auto;
+    }
+
+    @media (max-width: 600px) {
+      #lessons, #wordSearchResults {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Time to Korean Database</h1>
+
+  <div id="lessons">
+    <h2>WORDS</h2>
+    <select id="lessonDropdown"></select>
+    <button onclick="addWord()">Add New Word</button>
+    <button onclick="updateWord()">Update Word</button><br>
+
+    <label for="english">English:</label>
+    <input type="text" id="english" placeholder="Enter English word"><br>
+    <label for="korean">Korean:</label>
+    <input type="text" id="korean" placeholder="Enter Korean word"><br>
+    <label for="sentence">Sentence:</label>
+    <input type="text" id="sentence" placeholder="Enter sentence"><br>
+
+    <button onclick="searchWord()">Search Word</button>
+  </div>
+
+  <div id="wordSearchResults">
+    <h2>Word List:</h2>
+    <table id="wordListTable">
+      <thead>
+        <tr>
+          <th>English</th>
+          <th>Korean</th>
+          <th>Sentence</th>
+        </tr>
+      </thead>
+      <tbody id="wordListBody"></tbody>
+    </table>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyCAz8iCfA0y3cN_JL2rG913M2IgQ2CSVEE",
+      authDomain: "learnkorean-f7aa1.firebaseapp.com",
+      databaseURL: "https://learnkorean-f7aa1-default-rtdb.firebaseio.com",
+      projectId: "learnkorean-f7aa1",
+      storageBucket: "learnkorean-f7aa1.appspot.com",
+      messagingSenderId: "968443476602",
+      appId: "1:968443476602:web:66c775eb3d988a3d5299c3"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    var database = firebase.database();
+
+    firebase.auth().signInWithEmailAndPassword("test@gmail.com", "123456789")
+      .then(function (userCredential) {
+        var user = userCredential.user;
+        console.log("User authenticated:", user);
+
+        function retrieveLessons() {
+          var lessonDropdown = document.getElementById('lessonDropdown');
+          var lessonsRef = database.ref('lessons');
+
+          lessonsRef.on('child_added', function (lessonSnapshot) {
+            var lesson = lessonSnapshot.val();
+            var option = document.createElement('option');
+            option.value = lessonSnapshot.key;
+            option.textContent = lesson.lessonName;
+            lessonDropdown.appendChild(option);
+          });
+
+          lessonDropdown.addEventListener('change', function () {
+            var selectedLessonKey = lessonDropdown.value;
+            retrieveWords(selectedLessonKey);
+          });
+        }
+
+        function retrieveWords(lessonKey) {
+          var wordListBody = document.getElementById('wordListBody');
+          wordListBody.innerHTML = '';
+
+          var wordsRef = database.ref('lessons/' + lessonKey + '/words');
+
+          wordsRef.on('child_added', function (wordSnapshot) {
+            var word = wordSnapshot.val();
+            var row = document.createElement('tr');
+            var englishCell = document.createElement('td');
+            var koreanCell = document.createElement('td');
+            var sentenceCell = document.createElement('td');
+
+            englishCell.textContent = word.english;
+            koreanCell.textContent = word.korean;
+            sentenceCell.textContent = word.sentence;
+
+            row.appendChild(englishCell);
+            row.appendChild(koreanCell);
+            row.appendChild(sentenceCell);
+
+            wordListBody.appendChild(row);
+          });
+        }
+
+        retrieveLessons();
+
+        window.addWord = function () {
+          var lessonKey = document.getElementById('lessonDropdown').value;
+          var english = document.getElementById('english').value;
+          var korean = document.getElementById('korean').value;
+          var sentence = document.getElementById('sentence').value;
+
+          if (lessonKey && english && korean && sentence) {
+            var wordsRef = database.ref('lessons/' + lessonKey + '/words');
+            var newWordRef = wordsRef.push();
+            newWordRef.set({
+              english: english,
+              korean: korean,
+              sentence: sentence
+            });
+
+            document.getElementById('english').value = '';
+            document.getElementById('korean').value = '';
+            document.getElementById('sentence').value = '';
+            
+            showNotification('Word added successfully', 'success');
+          } else {
+            showNotification('Please fill in all fields.', 'error');
+          }
+        };
+
+        window.updateWord = function () {
+          var lessonKey = document.getElementById('lessonDropdown').value;
+          var englishToSearch = prompt('Enter the English word to search:');
+          var updatedEnglish = prompt('Enter the updated English word:');
+          var updatedKorean = prompt('Enter the updated Korean word:');
+          var updatedSentence = prompt('Enter the updated sentence:');
+
+          if (lessonKey && englishToSearch && updatedEnglish && updatedKorean && updatedSentence) {
+            var wordsRef = database.ref('lessons/' + lessonKey + '/words');
+            wordsRef.orderByChild('english').equalTo(englishToSearch).once('value', function (snapshot) {
+              if (snapshot.exists()) {
+                snapshot.forEach(function (childSnapshot) {
+                  var wordKey = childSnapshot.key;
+                  var wordRef = database.ref('lessons/' + lessonKey + '/words/' + wordKey);
+                  wordRef.update({
+                    english: updatedEnglish,
+                    korean: updatedKorean,
+                    sentence: updatedSentence
+                  });
+                });
+
+                retrieveWords(lessonKey);
+                showNotification('Word updated successfully', 'success');
+              } else {
+                showNotification('Word not found. Please enter a valid English word.', 'error');
+              }
+            });
+          } else {
+            showNotification('Please enter the lesson, English word to search, updated English word, updated Korean word, and the updated sentence.', 'error');
+          }
+        };
+
+        window.searchWord = function () {
+          var lessonKey = document.getElementById('lessonDropdown').value;
+          var searchEnglish = prompt('Enter the English word to search:');
+
+          if (lessonKey && searchEnglish) {
+            var wordsRef = database.ref('lessons/' + lessonKey + '/words');
+            wordsRef.once('value', function (snapshot) {
+              snapshot.forEach(function (childSnapshot) {
+                var word = childSnapshot.val();
+                if (word.english === searchEnglish) {
+                  document.getElementById('english').value = word.english || '';
+                  document.getElementById('korean').value = word.korean || '';
+                  document.getElementById('sentence').value = word.sentence || '';
+                  console.log('Word found:', word);
+                  showNotification('Word found successfully', 'success');
+                  return;
+                }
+              });
+            });
+          } else {
+            showNotification('Please enter the English word to search.', 'error');
+          }
+        };
+
+        function showNotification(message, type) {
+          var notification = document.getElementById('notification');
+          notification.textContent = message;
+          notification.className = 'notification ' + type;
+          
+          setTimeout(function () {
+            notification.textContent = '';
+            notification.className = 'notification';
+          }, 3000);
+        }
+      })
+      .catch(function (error) {
+        console.error("Authentication error:", error.code, error.message);
+      });
+  </script>
+</body>
+
+</html>
