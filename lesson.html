@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+   body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    #lessons {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+      text-align: center;
+      width: 80%;
+    }
+
+    select, input, button {
+      margin: 8px;
+      padding: 8px;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    button {
+      background-color: #007BFF;
+      color: #fff;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    #wordSearchResults {
+      margin-top: 20px;
+      text-align: center;
+      width: 80%;
+    }
+
+    #searchResultsTable {
+      width: 100%;
+      margin: auto;
+    }
+
+    @media (max-width: 600px) {
+      #lessons, #wordSearchResults {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Lesson Management</h1>
+
+  <div id="lessonManagement">
+    <label for="lessonName">Lesson Name:</label>
+    <input type="text" id="lessonName" placeholder="Enter lesson name">
+    <button onclick="addLesson()">Add Lesson</button>
+
+    <select id="lessonDropdown"></select>
+    <button onclick="deleteLesson()">Delete Lesson</button>
+
+    <div id="notification"></div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyCAz8iCfA0y3cN_JL2rG913M2IgQ2CSVEE",
+      authDomain: "learnkorean-f7aa1.firebaseapp.com",
+      databaseURL: "https://learnkorean-f7aa1-default-rtdb.firebaseio.com",
+      projectId: "learnkorean-f7aa1",
+      storageBucket: "learnkorean-f7aa1.appspot.com",
+      messagingSenderId: "968443476602",
+      appId: "1:968443476602:web:66c775eb3d988a3d5299c3"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    var database = firebase.database();
+
+    function addLesson() {
+      var lessonName = document.getElementById('lessonName').value;
+
+      if (lessonName) {
+        var lessonsRef = database.ref('lessons');
+        var newLessonRef = lessonsRef.push();
+        newLessonRef.set({
+          lessonName: lessonName
+        });
+
+        document.getElementById('lessonName').value = '';
+        showNotification('Lesson added successfully', 'success');
+        retrieveLessons();
+      } else {
+        showNotification('Please enter a lesson name', 'error');
+      }
+    }
+
+    function deleteLesson() {
+      var lessonKey = document.getElementById('lessonDropdown').value;
+
+      if (lessonKey) {
+        database.ref('lessons/' + lessonKey).remove();
+        showNotification('Lesson deleted successfully', 'success');
+        retrieveLessons();
+      } else {
+        showNotification('Please select a lesson to delete', 'error');
+      }
+    }
+
+    function retrieveLessons() {
+      var lessonDropdown = document.getElementById('lessonDropdown');
+      lessonDropdown.innerHTML = '';
+
+      var lessonsRef = database.ref('lessons');
+
+  // Order lessons by lessonName in ascending order
+  lessonsRef.orderByChild('lessonName').on('child_added', function (lessonSnapshot) {
+    var lesson = lessonSnapshot.val();
+    var option = document.createElement('option');
+    option.value = lessonSnapshot.key;
+    option.textContent = lesson.lessonName;
+    lessonDropdown.appendChild(option);
+  });
+    }
+
+    function showNotification(message, type) {
+      var notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = 'notification ' + type;
+
+      setTimeout(function () {
+        notification.textContent = '';
+        notification.className = 'notification';
+      }, 3000);
+    }
+
+    retrieveLessons();
+  </script>
+</body>
+
+</html>
