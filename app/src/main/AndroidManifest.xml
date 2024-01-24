@@ -12,7 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LearnKorean"
         tools:targetApi="31">
-
+        <activity
+            android:name=".Activities.Grammarlessons"
+            android:exported="false"
+            android:label="@string/title_activity_grammarlessons"
+            android:theme="@style/Theme.LearnKorean" />
         <activity
             android:name=".Activities.GrammerListActivity"
             android:exported="false" />
