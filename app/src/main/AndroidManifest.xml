@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LearnKorean"
         tools:targetApi="31">
+
         <activity
             android:name=".Activities.GrammerListActivity"
             android:exported="false" />
@@ -20,9 +21,6 @@
             android:exported="false" />
         <activity
             android:name=".Activities.IntroductionActivity"
-            android:exported="false" />
-        <activity
-            android:name=".IntroActivity"
             android:exported="false" />
         <activity
             android:name=".Activities.MainActivity"
