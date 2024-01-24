@@ -48,7 +48,7 @@ public class WordsFragment extends Fragment implements WordLAdapter.OnItemClickL
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("lessons");
 
-        eventListener = databaseReference.addValueEventListener(new ValueEventListener() {
+        eventListener = databaseReference.orderByChild("lessonName").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 modelList.clear();
@@ -60,6 +60,7 @@ public class WordsFragment extends Fragment implements WordLAdapter.OnItemClickL
                 }
                 adapter.notifyDataSetChanged();
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
