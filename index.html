@@ -144,13 +144,14 @@
           var lessonDropdown = document.getElementById('lessonDropdown');
           var lessonsRef = database.ref('lessons');
 
-          lessonsRef.on('child_added', function (lessonSnapshot) {
-            var lesson = lessonSnapshot.val();
-            var option = document.createElement('option');
-            option.value = lessonSnapshot.key;
-            option.textContent = lesson.lessonName;
-            lessonDropdown.appendChild(option);
-          });
+         // Order lessons by lessonName in ascending order
+	  lessonsRef.orderByChild('lessonName').on('child_added', function (lessonSnapshot) {
+	    var lesson = lessonSnapshot.val();
+	    var option = document.createElement('option');
+	    option.value = lessonSnapshot.key;
+	    option.textContent = lesson.lessonName;
+	    lessonDropdown.appendChild(option);
+	  });
 
           lessonDropdown.addEventListener('change', function () {
             var selectedLessonKey = lessonDropdown.value;
