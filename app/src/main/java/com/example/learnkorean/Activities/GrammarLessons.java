@@ -1,6 +1,8 @@
 package com.example.learnkorean.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,7 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GrammarLessons extends AppCompatActivity {
+public class GrammarLessons extends AppCompatActivity implements GrammarAdapter.OnItemClickListener {
 
     private DatabaseReference databaseReference;
     private GrammarAdapter adapter;
@@ -35,7 +37,7 @@ public class GrammarLessons extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         grammarModelList = new ArrayList<>();
-        adapter = new GrammarAdapter(this, grammarModelList);
+        adapter = new GrammarAdapter(this, grammarModelList, this);
         recyclerView.setAdapter(adapter);
 
         String lessonId = getIntent().getStringExtra("lessonId");
@@ -63,5 +65,15 @@ public class GrammarLessons extends AppCompatActivity {
             Toast.makeText(this, "Lesson not found", Toast.LENGTH_SHORT).show();
             finish();
         }
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        GrammarModel clickedItem = grammarModelList.get(position);
+        String selectedGrammarId = clickedItem.getGrammarId();
+
+        Intent intent = new Intent(this, GrammarDetailActivity.class);
+        intent.putExtra("grammarId", selectedGrammarId);
+        startActivity(intent);
     }
 }

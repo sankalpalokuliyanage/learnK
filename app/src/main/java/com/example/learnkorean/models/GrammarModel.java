@@ -1,34 +1,48 @@
 package com.example.learnkorean.models;
 
-import java.util.Map;
-
 public class GrammarModel {
+    private String grammarId;
     private String grammarName;
-    private Map<String, TitleModel> titles; // Map to hold titles
+    private String titleName;
+    private String description;
 
+    // Constructor
     public GrammarModel() {
-        // Required empty constructor for Firebase
+        // Default constructor required for Firebase
     }
 
-    public GrammarModel(String grammarName, Map<String, TitleModel> titles) {
-        this.grammarName = grammarName;
-        this.titles = titles;
+    // Getter methods
+    public String getGrammarId() {
+        return grammarId;
     }
 
-    // Add getters and setters
     public String getGrammarName() {
         return grammarName;
+    }
+
+    public String getTitleName() {
+        return titleName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    // Setter methods (if needed)
+
+    public void setGrammarId(String grammarId) {
+        this.grammarId = grammarId;
     }
 
     public void setGrammarName(String grammarName) {
         this.grammarName = grammarName;
     }
 
-    public Map<String, TitleModel> getTitles() {
-        return titles;
+    public void setTitleName(String titleName) {
+        this.titleName = titleName;
     }
 
-    public void setTitles(Map<String, TitleModel> titles) {
-        this.titles = titles;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

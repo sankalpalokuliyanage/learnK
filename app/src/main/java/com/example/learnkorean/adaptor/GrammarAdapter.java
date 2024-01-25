@@ -11,30 +11,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.learnkorean.R;
 import com.example.learnkorean.models.GrammarModel;
-import com.example.learnkorean.models.WordModel;
 
 import java.util.List;
 
-public class GrammarAdapter extends RecyclerView.Adapter<GrammarAdapter.GrammarViewHolder>  {
+public class GrammarAdapter extends RecyclerView.Adapter<GrammarAdapter.GrammarViewHolder> {
 
     private Context context;
     private List<GrammarModel> grammarModelList;
+    private OnItemClickListener listener;
 
-    public GrammarAdapter(Context context, List<GrammarModel> grammarModelList) {
+    public GrammarAdapter(Context context, List<GrammarModel> grammarModelList, OnItemClickListener listener) {
         this.context = context;
         this.grammarModelList = grammarModelList;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
-    public GrammarAdapter.GrammarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.wlrecyc, parent, false);
-        return new GrammarAdapter.GrammarViewHolder(view);
+    public GrammarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_grammar, parent, false);
+        return new GrammarViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GrammarAdapter.GrammarViewHolder holder, int position) {
-        holder.GrammarName.setText(grammarModelList.get(position).getGrammarName());
+    public void onBindViewHolder(@NonNull GrammarViewHolder holder, int position) {
+        holder.bind(grammarModelList.get(position), listener);
     }
 
     @Override
@@ -42,12 +43,33 @@ public class GrammarAdapter extends RecyclerView.Adapter<GrammarAdapter.GrammarV
         return grammarModelList.size();
     }
 
-    public class GrammarViewHolder extends RecyclerView.ViewHolder  {
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
 
-        TextView GrammarName;
+    public class GrammarViewHolder extends RecyclerView.ViewHolder {
+
+        TextView grammarNameTextView;
+
         public GrammarViewHolder(@NonNull View itemView) {
             super(itemView);
-            GrammarName = itemView.findViewById(R.id.wlname);
+            grammarNameTextView = itemView.findViewById(R.id.textViewGrammarName);
+        }
+
+        public void bind(final GrammarModel grammarModel, final OnItemClickListener listener) {
+            grammarNameTextView.setText(grammarModel.getGrammarName());
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
         }
     }
 }
