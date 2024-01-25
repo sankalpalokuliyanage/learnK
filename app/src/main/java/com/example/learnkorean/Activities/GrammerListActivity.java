@@ -17,7 +17,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
+import com.example.learnkorean.Activities.GrammarLessons;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +69,7 @@ public class GrammerListActivity extends AppCompatActivity implements WordLAdapt
         WordLModel clickedItem = modelList.get(position);
         String selectedLessonId = clickedItem.getLessonId();
 
-        Intent intent = new Intent(this, WordsActivity.class);
+        Intent intent = new Intent(this, GrammarLessons.class);
         intent.putExtra("lessonId", selectedLessonId);
         startActivity(intent);
     }

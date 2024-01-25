@@ -1,9 +1,14 @@
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<!-- res/layout/activity_grammar_lessons.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/recyclerforWords"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    android:paddingTop="?attr/actionBarSize"
-    tools:listitem="@layout/wordlistitem_layout" />
+    tools:context=".Activities.GrammarLessons">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_grammar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp" />
+
+</RelativeLayout>
