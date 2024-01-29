@@ -68,7 +68,7 @@ public class GrammarDetailActivity extends AppCompatActivity {
 
         // For simplicity, only displaying the first title
         if (grammarModel.getTitles() != null && !grammarModel.getTitles().isEmpty()) {
-            GrammarModel.TitleModel titleModel = grammarModel.getTitles().get(0); // Now using fully qualified import
+            GrammarModel.TitleModel titleModel = grammarModel.getTitles().get(0);
             titleNameTextView.setText(titleModel.getTitleName());
             descriptionTextView.setText(titleModel.getDescription());
         }

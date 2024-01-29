@@ -60,7 +60,6 @@ public class GrammarAdapter extends RecyclerView.Adapter<GrammarAdapter.GrammarV
             super(itemView);
             grammarNameTextView = itemView.findViewById(R.id.textViewGrammarName);
             titleNameTextView = itemView.findViewById(R.id.textViewTitleName);
-            // Add other views if needed...
         }
     }
 }
