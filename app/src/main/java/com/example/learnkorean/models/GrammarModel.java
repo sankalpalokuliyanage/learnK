@@ -1,48 +1,65 @@
+// GrammarModel.java
+
 package com.example.learnkorean.models;
 
-public class GrammarModel {
-    private String grammarId;
-    private String grammarName;
-    private String titleName;
-    private String description;
+import java.util.List;
 
-    // Constructor
+public class GrammarModel {
+    private String grammarName;
+    private List<TitleModel> titles;
+
     public GrammarModel() {
-        // Default constructor required for Firebase
+        // Required empty public constructor
     }
 
-    // Getter methods
-    public String getGrammarId() {
-        return grammarId;
+    public GrammarModel(String grammarName, List<TitleModel> titles) {
+        this.grammarName = grammarName;
+        this.titles = titles;
     }
 
     public String getGrammarName() {
         return grammarName;
     }
 
-    public String getTitleName() {
-        return titleName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    // Setter methods (if needed)
-
-    public void setGrammarId(String grammarId) {
-        this.grammarId = grammarId;
-    }
-
     public void setGrammarName(String grammarName) {
         this.grammarName = grammarName;
     }
 
-    public void setTitleName(String titleName) {
-        this.titleName = titleName;
+    public List<TitleModel> getTitles() {
+        return titles;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setTitles(List<TitleModel> titles) {
+        this.titles = titles;
+    }
+
+    public static class TitleModel {
+        private String description;
+        private String titleName;
+
+        public TitleModel() {
+            // Required empty public constructor
+        }
+
+        public TitleModel(String description, String titleName) {
+            this.description = description;
+            this.titleName = titleName;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getTitleName() {
+            return titleName;
+        }
+
+        public void setTitleName(String titleName) {
+            this.titleName = titleName;
+        }
     }
 }

@@ -1,12 +1,20 @@
 package com.example.learnkorean.Activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.learnkorean.R;
 import com.example.learnkorean.models.GrammarModel;
+import com.example.learnkorean.models.TitleModel;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class GrammarDetailActivity extends AppCompatActivity {
 
@@ -19,31 +27,50 @@ public class GrammarDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grammar_detail);
 
+        Log.d("GrammarDetailActivity", "onCreate");
+
         grammarNameTextView = findViewById(R.id.textViewGrammarName);
         titleNameTextView = findViewById(R.id.textViewTitleName);
         descriptionTextView = findViewById(R.id.textViewDescription);
 
+        String lessonId = getIntent().getStringExtra("lessonId");
         String grammarId = getIntent().getStringExtra("grammarId");
 
-        if (grammarId != null) {
-            // TODO: Fetch detailed information about the selected grammar from the database
-            // For now, using sample data
-            displaySampleGrammarDetails();
+        if (lessonId != null && grammarId != null) {
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                    .getReference().child("lessons").child(lessonId).child("grammar").child(grammarId);
+
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.d("GrammarDetailActivity", "onDataChange");
+                    GrammarModel grammarModel = dataSnapshot.getValue(GrammarModel.class);
+                    if (grammarModel != null) {
+                        updateUI(grammarModel);
+                    } else {
+                        Log.e("GrammarDetailActivity", "Failed to parse GrammarModel from dataSnapshot");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e("GrammarDetailActivity", "Firebase database error: " + databaseError.getMessage());
+                    Toast.makeText(GrammarDetailActivity.this, "Error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         } else {
-            // Handle the case where grammarId is null
-            // You may want to show an error message or navigate back
+
         }
     }
 
-    private void displaySampleGrammarDetails() {
-        // Sample GrammarModel to demonstrate the display
-        GrammarModel sampleGrammar = new GrammarModel();
-        sampleGrammar.setGrammarName("Sample Grammar");
-        sampleGrammar.setTitleName("Sample Title");
-        sampleGrammar.setDescription("This is a sample description for the grammar.");
+    private void updateUI(GrammarModel grammarModel) {
+        grammarNameTextView.setText(grammarModel.getGrammarName());
 
-        grammarNameTextView.setText(sampleGrammar.getGrammarName());
-        titleNameTextView.setText(sampleGrammar.getTitleName());
-        descriptionTextView.setText(sampleGrammar.getDescription());
+        // For simplicity, only displaying the first title
+        if (grammarModel.getTitles() != null && !grammarModel.getTitles().isEmpty()) {
+            GrammarModel.TitleModel titleModel = grammarModel.getTitles().get(0); // Now using fully qualified import
+            titleNameTextView.setText(titleModel.getTitleName());
+            descriptionTextView.setText(titleModel.getDescription());
+        }
     }
 }
