@@ -10,9 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.learnkorean.Activities.GrammerListActivity;
 import com.example.learnkorean.Activities.IntroductionActivity;
 import com.example.learnkorean.Activities.MainActivity;
+import com.example.learnkorean.Activities.QuizActivity;
 import com.example.learnkorean.R;
 
 
@@ -32,10 +32,10 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        view.findViewById(R.id.gr).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.qui).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), GrammerListActivity.class));
+                startActivity(new Intent(getActivity(), QuizActivity.class));
             }
         });
 
